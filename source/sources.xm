@@ -3,13 +3,16 @@
 %hook SourcesController
 %property(nonatomic, retain) UIRefreshControl *refreshControl;
 
-- (void)viewWillAppear: (BOOL)animated {
-	%orig;
-
+- (void)viewDidLoad {
 	UITableView *table = (UITableView *)object_getIvar(self, class_getInstanceVariable([self class], "list_"));
 	self.refreshControl = [[UIRefreshControl alloc] init];
 	table.refreshControl = self.refreshControl;
 	[self.refreshControl addTarget:self action:@selector(refreshButtonClicked) forControlEvents:UIControlEventValueChanged];
+}
+
+- (void)viewWillAppear: (BOOL)animated {
+	%orig;
+
 	if ([[self delegate] updating]) { [self.refreshControl beginRefreshing]; }
 
 	self.navigationItem.prompt = [NSString stringWithFormat:@"Total Sources: %lu", [[[NSClassFromString(@"Database") sharedInstance] sources] count]];
@@ -70,11 +73,13 @@
 - (void)refreshButtonClicked {
 	%orig;
 	[self performSelector:@selector(setNavItemrButtons)];
+	[self.refreshControl beginRefreshing];
 }
 
 - (void)cancelButtonClicked {
 	%orig;
 	[self performSelector:@selector(setNavItemrButtons)];
+	[self.refreshControl endRefreshing];
 }
 
 - (void)addButtonClicked {

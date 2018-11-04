@@ -11,9 +11,26 @@
 	[self.refreshControl addTarget:self action:@selector(refreshButtonClicked) forControlEvents:UIControlEventValueChanged];
 }
 
+- (void)viewWillAppear: (BOOL)animated {
+	%orig;
+
+	if ([[self delegate] updating]) { [self.refreshControl beginRefreshing]; }
+}
+
 - (void)reloadData {
 	[self.refreshControl endRefreshing];
 	%orig;
 }
+
+- (void)refreshButtonClicked {
+	%orig;
+	[self.refreshControl beginRefreshing];
+}
+
+- (void)cancelButtonClicked {
+	%orig;
+	[self.refreshControl endRefreshing];
+}
+
 
 %end
