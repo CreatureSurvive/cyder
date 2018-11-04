@@ -1,0 +1,3 @@
+[submodule "CSCFPreferences"]
+	path = CSCFPreferences
+	url = https://github.com/CreatureSurvive/CSCFPreferences.git

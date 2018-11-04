@@ -1,0 +1,19 @@
+Package: com.creaturecoding.cyder
+Name: cyder
+Depends: firmware (>= 10.0), mobilesubstrate
+Version: 0.1
+Conflicts: 
+Replaces: 
+Priority: optional
+Architecture: iphoneos-arm
+Description: make Cydia shittier? idk
+Maintainer: CreatureSurvive <support@creaturecoding.com>
+Author: CreatureSurvive <support@creaturecoding.com>
+Section: Tweaks
+dev: CreatureSurvive <support@creaturecoding.com>
+Homepage: https://creaturecoding.com/
+Depiction: https://creaturecoding.com/?page=depiction&id=cyder
+Icon: 
+
+
+
