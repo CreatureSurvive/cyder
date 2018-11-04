@@ -2,9 +2,29 @@
 
 cyder is a mobile substrate tweak that aims to bring more modern UI to cydia while keeping the same familiar design we've grown to love over the years.
 
-------
+For more information check out the [depiction](https://creaturecoding.com/?page=depiction&id=cyder)
 
-for more information check out the [depiction](https://creaturecoding.com/?page=depiction&id=cyder)
+For beta access you can add my repo [https://creaturecoding.com/repo/](https://creaturecoding.com/?page=repo).
+
+---
+
+## Features
+
+- pull to refresh,
+- bulk add sources
+- copy/share source list
+- a ton of UI modernization 
+- some dumb navbar prompts that are useless 
+
+## Planned Features
+
+- Bookmarks/Wishlist tab
+- copy/share package list
+- backup/restore sources and packages
+
+## Problematic Features
+
+- enabling Large Titles seems to be impossible without recompiling cydia.
 
 ## Credits and Acknowledgments
 
