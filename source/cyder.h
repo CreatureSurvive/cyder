@@ -42,14 +42,27 @@
 @interface Package : NSObject {
     unsigned ignored_ : 1;
 }
+- (void)parse;
 - (char)ignored;
 - (BOOL)setSubscribed:(BOOL)subscribed;
 - (BOOL)subscribed;
+- (BOOL)isCommercial;
+- (UIImage *)icon;
 - (NSString *)id;
 - (NSString *)name;
+- (NSString *)mode;
+- (NSString *)longDescription;
+- (NSString *)shortDescription;
+- (NSString *)installed;
+- (Source *)source;
 @end
 
 @interface PackageCell : UITableViewCell
+@property (nonatomic, retain) UIImageView *icon;
+@property (nonatomic, retain) UIImageView *badge;
+@property (nonatomic, retain) UILabel *name;
+@property (nonatomic, retain) UILabel *description;
+@property (nonatomic, retain) UILabel *source;
 - (void)setPackage:(Package *)package asSummary:(BOOL)summary;
 @end
 
@@ -99,4 +112,24 @@
 
 @interface CyteTabBarController : UITabBarController
 - (void) addViewControllers:(id)no, ...;
+@end
+
+@protocol CyteTableViewCellDelegate
+- (void) drawContentRect:(CGRect)rect;
+@end
+
+@interface CyteTableViewCellContentView : UIView
+
+- (id) delegate;
+- (void) setDelegate:(id<CyteTableViewCellDelegate>)delegate;
+
+@end
+
+@interface CyteTableViewCell : UITableViewCell
+
+- (void) setContent:(CyteTableViewCellContentView *)content;
+- (CyteTableViewCellContentView *) content;
+
+- (bool) highlighted;
+
 @end
