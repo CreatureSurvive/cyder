@@ -200,6 +200,38 @@
 			</dict>
 			<dict>
 				<key>cell</key>
+				<string>PSSwitchCell</string>
+				<key>label</key>
+				<string>Set Background Image</string>
+				<key>key</key>
+				<string>enableImage</string>
+				<key>PostNotification</key>
+				<string>com.midnightchips.cyderprefs.prefschanged</string>
+				<key>defaults</key>
+				<string>com.midnightchips.cyderprefs</string>
+			</dict>
+			<dict>
+				<key>cell</key>
+				<string>PSTableCell</string>
+				<key>cellClass</key>
+				<string>CSPImageCell</string>
+				<key>height</key>
+				<string>50</string>
+				<key>static</key>
+				<false/>
+				<key>key</key>
+				<string>tableImage</string>
+				<key>storePath</key>
+				<string>/var/mobile/Library/Preferences/Cyder/background.png</string>
+				<key>PostNotification</key>
+				<string>com.midnightchips.cyderprefs.prefschanged</string>
+				<key>defaults</key>
+				<string>com.midnightchips.cyderprefs</string>
+				<key>defaultsPath</key>
+				<string>/Library/PreferenceBundles/cyderprefs.bundle</string>
+			</dict>
+			<dict>
+				<key>cell</key>
 				<string>PSGroupCell</string>
 				<key>footerText</key>
 				<string>CreatureCoding © 2017</string>

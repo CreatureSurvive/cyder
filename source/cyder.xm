@@ -201,6 +201,7 @@
 -(void)layoutSubviews{
 	%orig;
 	self.tintColor = [prefs colorForKey:@"navTintColor"];
+	self.backgroundColor = [UIColor clearColor];
 }
 %end
 

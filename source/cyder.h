@@ -1,5 +1,7 @@
 #include "CYPProvider.h"
 #include <CSColorPicker/CSColorPicker.h>
+#include "UIImage+ScaledImage.h"
+
 #define COMPATIBILITY_PATH  @"/var/mobile/Library/Caches/com.saurik.Cydia/cyder-compatibility.plist"
 
 @interface UIApplication ()
@@ -160,3 +162,21 @@
 @interface _UIBarBackground : UIView
 @property (nonatomic,readonly) UIImageView * shim_shadowView; 
 @end 
+
+//Resize Image Interface and Implementation
+@interface UIImage (ResizeImage)
+- (UIImage *)imageScaledToSize:(CGSize)newSize;
+@end
+//Implementation
+@implementation UIImage (ResizeImage)
+
+- (UIImage *)imageScaledToSize:(CGSize)newSize {
+        UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+        [self drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        return newImage;
+}
+
+@end
+
