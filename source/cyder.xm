@@ -258,9 +258,37 @@
 
 - (void)layoutSubviews {
 	%orig;
-	self.backgroundView.backgroundColor = [prefs colorForKey:@"navBackgroundColor"];//[UIColor groupTableViewBackgroundColor];
+	self.backgroundView.backgroundColor = [prefs colorForKey:[prefs boolForKey:@"enableImage"] ? @"navBackgroundColor" : @"tableColor"];//[UIColor groupTableViewBackgroundColor];
 	self.textLabel.font = [UIFont boldSystemFontOfSize:18];
 	self.textLabel.textColor = [prefs colorForKey:@"navTextColor"];
 }
+
+%end
+
+%hook UITableView
+
+- (void)layoutSubviews {
+	%orig;
+	self.sectionIndexBackgroundColor = [UIColor clearColor];
+	self.separatorColor = [UIColor clearColor];
+	//self.backgroundColor = [prefs colorForKey:@"tableColor"];//[UIColor groupTableViewBackgroundColor];
+}
+
+-(void)didMoveToWindow {
+		%orig;
+		//No Separators in the Tables
+		self.separatorStyle = UITableViewCellSeparatorStyleNone;
+		//Set the background Color to a Color or to an Image
+		//self.backgroundColor = [UIColor blackColor];
+		//Set the Background to an Image, Importing UIImage+ScaledImage.h for this
+		if([prefs boolForKey:@"enableImage"]) {    
+				UIImage *bgImage = [[UIImage imageWithContentsOfFile: @"/var/mobile/Library/Preferences/Cyder/background.jpg"] imageScaledToSize:[[UIApplication sharedApplication] keyWindow].bounds.size];
+				self.backgroundView = [[UIImageView alloc] initWithImage: bgImage];
+		}else{
+				self.backgroundColor = [prefs colorForKey:@"tableColor"];
+		}
+
+}
+
 
 %end
