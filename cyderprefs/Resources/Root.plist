@@ -212,13 +212,15 @@
 			</dict>
 			<dict>
 				<key>cell</key>
-				<string>PSTableCell</string>
-				<key>cellClass</key>
-				<string>CSPImageCell</string>
-				<key>height</key>
-				<string>50</string>
+                <string>PSButtonCell</string>
+                <key>cellClass</key>
+                <string>CSPSideImageCell</string>
+                <key>height</key>
+                <string>81</string>
 				<key>static</key>
 				<false/>
+				<key>label</key>
+				<string>Choose background Image</string>
 				<key>key</key>
 				<string>tableImage</string>
 				<key>storePath</key>
