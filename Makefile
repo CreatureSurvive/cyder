@@ -21,9 +21,12 @@ TWEAK_NAME = cyder
 $(TWEAK_NAME)_FILES = $(wildcard source/*.m source/*/*.m source/*.xm)
 $(TWEAK_NAME)_FRAMEWORKS = 
 $(TWEAK_NAME)_PRIVATE_FRAMEWORKS = 
+$(TWEAK_NAME)_LDFLAGS += -lCSPreferencesProvider -lCSColorPicker
 $(TWEAK_NAME)_CFLAGS +=  -fobjc-arc -I$(THEOS_PROJECT_DIR)/source
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 
 after-install::
 	install.exec "killall -9 Cydia"
+SUBPROJECTS += cyderprefs
+include $(THEOS_MAKE_PATH)/aggregate.mk

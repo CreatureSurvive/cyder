@@ -1,3 +1,5 @@
+#include "CYPProvider.h"
+
 @interface UIApplication ()
 - (void)presentModalViewController:(id)controller force:(BOOL)force;
 - (BOOL)openCydiaURL:(id)url forExternal:(BOOL)external;
