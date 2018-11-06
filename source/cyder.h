@@ -1,3 +1,4 @@
+#include "CYPProvider.h"
 #define COMPATIBILITY_PATH  @"/var/mobile/Library/Caches/com.saurik.Cydia/cyder-compatibility.plist"
 
 @interface UIApplication ()
