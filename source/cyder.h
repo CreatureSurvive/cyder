@@ -1,3 +1,5 @@
+#define COMPATIBILITY_PATH  @"/var/mobile/Library/Caches/com.saurik.Cydia/cyder-compatibility.plist"
+
 @interface UIApplication ()
 - (void)presentModalViewController:(id)controller force:(BOOL)force;
 - (BOOL)openCydiaURL:(id)url forExternal:(BOOL)external;
@@ -10,6 +12,7 @@
 @end
 
 @interface Database : NSObject
+@property (nonatomic, retain) NSDictionary *cyderCompatibilityList;
 + (Database *)sharedInstance;
 - (NSArray<Source *> *)sources;
 - (NSArray *)packages;
@@ -23,8 +26,9 @@
 @end
 
 @interface Cydia
-- (void) syncData;
-- (BOOL) addTrivialSource:(NSString *)href;
+@property (nonatomic, retain) NSDictionary *cyderCompatibility;
+- (void)syncData;
+- (BOOL)addTrivialSource:(NSString *)href;
 - (BOOL)updating;
 @end
 
@@ -51,6 +55,7 @@
 - (NSString *)id;
 - (NSString *)name;
 - (NSString *)mode;
+- (NSString *)latest;
 - (NSString *)longDescription;
 - (NSString *)shortDescription;
 - (NSString *)installed;
@@ -60,6 +65,7 @@
 @interface PackageCell : UITableViewCell
 @property (nonatomic, retain) UIImageView *icon;
 @property (nonatomic, retain) UIImageView *badge;
+@property (nonatomic, retain) UIView *compatible_badge;
 @property (nonatomic, retain) UILabel *name;
 @property (nonatomic, retain) UILabel *description;
 @property (nonatomic, retain) UILabel *source;
@@ -111,25 +117,25 @@
 @end
 
 @interface CyteTabBarController : UITabBarController
-- (void) addViewControllers:(id)no, ...;
+- (void)addViewControllers:(id)no, ...;
 @end
 
 @protocol CyteTableViewCellDelegate
-- (void) drawContentRect:(CGRect)rect;
+- (void)drawContentRect:(CGRect)rect;
 @end
 
 @interface CyteTableViewCellContentView : UIView
 
-- (id) delegate;
-- (void) setDelegate:(id<CyteTableViewCellDelegate>)delegate;
+- (id)delegate;
+- (void)setDelegate:(id<CyteTableViewCellDelegate>)delegate;
 
 @end
 
 @interface CyteTableViewCell : UITableViewCell
 
-- (void) setContent:(CyteTableViewCellContentView *)content;
+- (void)setContent:(CyteTableViewCellContentView *)content;
 - (CyteTableViewCellContentView *) content;
 
-- (bool) highlighted;
+- (bool)highlighted;
 
 @end

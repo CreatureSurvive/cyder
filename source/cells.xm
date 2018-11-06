@@ -4,14 +4,26 @@ UIColor *LabelColor(BOOL detail, BOOL commercial, BOOL removing) {
 	if (commercial) {
 		return [UIColor colorWithRed:0.15f green:0.56f blue:0.84f alpha:detail ? 0.5f : 1];
 	} else if (removing) {
-		return [UIColor colorWithRed:0.87f green:0.31f blue:0.20f alpha:detail ? 0.5f : 1];
+		return [UIColor colorWithRed:0.87f green:0.09f blue:0.09f alpha:detail ? 0.5f : 1];
 	}
 	return [[UIColor darkTextColor] colorWithAlphaComponent:detail ? 0.5f : 1];
+}
+
+UIColor *CompatibilityColor(NSUInteger status) {
+	switch (status) {
+		case 1:
+			return [UIColor colorWithRed:0.3f green:0.85f blue:1 alpha:1];
+		case 2:
+			return [UIColor colorWithRed:1 green:0.18f blue:0.33f alpha:1];
+		default:
+			return [UIColor colorWithRed:1 green:0.8f blue:0 alpha:1];
+	}
 }
 
 %hook PackageCell
 %property (nonatomic, retain) UIImageView *icon;
 %property (nonatomic, retain) UIImageView *badge;
+%property (nonatomic, retain) UIView *compatible_badge;
 %property (nonatomic, retain) UILabel *name;
 %property (nonatomic, retain) UILabel *description;
 %property (nonatomic, retain) UILabel *source;
@@ -36,6 +48,10 @@ UIColor *LabelColor(BOOL detail, BOOL commercial, BOOL removing) {
 	if (self.description) {
 		self.description.frame = CGRectMake(10, CGRectGetHeight(bounds) - 22, CGRectGetWidth(bounds) - 20, 18);
 	}
+	
+	if (self.compatible_badge) {
+		self.compatible_badge.frame = CGRectMake(CGRectGetWidth(bounds) - 8, 0, 8, CGRectGetHeight(bounds));
+	}
 }
 
 - (void) setPackage:(Package *)package asSummary:(bool)summary {
@@ -51,13 +67,27 @@ UIColor *LabelColor(BOOL detail, BOOL commercial, BOOL removing) {
 		badge = @"installed";
 	}
 	
+	NSUInteger compatible = 0; // 0 = unknown | 1 = compatible | 2 = not compatible
+	Database *database = [NSClassFromString(@"Database") sharedInstance];
+	if (NSDictionary *bundle = database.cyderCompatibilityList[package.id]) {
+		if (NSString *latest = bundle[package.latest]) {
+			compatible = [latest isEqualToString:@"Working"] ? 1 : 2;
+		}
+	}
+	
 	BOOL commercial = package.isCommercial;
 	BOOL removing = [badge isEqualToString:@"removing"];
+	
+	if (!self.compatible_badge) {
+		self.compatible_badge = [[UIView alloc] init];
+		self.compatible_badge.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleTopMargin;
+		[self.contentView addSubview:self.compatible_badge];
+	}
 	
 	if (!self.icon) {
 		self.icon = [[UIImageView alloc] initWithImage:package.icon];
 		self.icon.frame = CGRectMake(10, 10, 30, 30);
-		self.badge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+		self.icon.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		self.icon.contentMode = UIViewContentModeScaleAspectFit;
 		[self.contentView addSubview:self.icon];
 	}
@@ -99,6 +129,7 @@ UIColor *LabelColor(BOOL detail, BOOL commercial, BOOL removing) {
 	self.source.text = [package.source rooturi];
 	self.description.text = package.shortDescription;
 	self.badge.image = badge ? [UIImage imageNamed:badge] : nil;
+	self.compatible_badge.backgroundColor = CompatibilityColor(compatible);
 }
 
 - (void) drawSummaryContentRect:(CGRect)rect {}

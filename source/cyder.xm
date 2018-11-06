@@ -1,9 +1,69 @@
 #import <objc/runtime.h>
 #import <cyder.h>
 
-/*
-// CYDIA HOOKS
-*/
+%hook Cydia 
+
+- (void)loadData {
+	%orig;
+	[[NSClassFromString(@"Database") sharedInstance] performSelector:@selector(fetchCyderCompatibilityList)];
+}
+
+%end
+
+%hook Database
+%property (nonatomic, retain) NSDictionary *cyderCompatibilityList;
+
+%new - (void)fetchCyderCompatibilityList {
+	if ([[NSFileManager defaultManager] fileExistsAtPath:COMPATIBILITY_PATH isDirectory:nil]) {
+		NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:COMPATIBILITY_PATH error:nil];
+
+		if ([[NSDate date] timeIntervalSinceDate:[attributes fileModificationDate]] < 15 * 60) {
+			self.cyderCompatibilityList = [NSDictionary dictionaryWithContentsOfFile:COMPATIBILITY_PATH];
+			return;
+		}
+	}
+	
+	NSMutableDictionary *tc_packages = [NSMutableDictionary new];
+	
+	NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+	NSURL *url =  [NSURL URLWithString:[NSString stringWithFormat:@"https://jlippold.github.io/tweakCompatible/json/iOS/%@.json", [[UIDevice currentDevice] systemVersion]]];
+	NSURLRequest *request =  [[NSURLRequest alloc] initWithURL:url];
+	
+	[[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+		if (!error) {
+			
+			NSDictionary *responseData = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+			for (NSDictionary *package in responseData[@"packages"]) {
+				NSString *packageId = package[@"id"];
+				
+				NSMutableDictionary *versions = [NSMutableDictionary new];
+				for (NSDictionary *version in package[@"versions"]) {
+					NSString *versionNumber = version[@"tweakVersion"];
+					NSString *working = ((NSDictionary *)version[@"outcome"])[@"calculatedStatus"];
+					[versions setObject:working forKey:versionNumber];
+				}
+				
+				if ( ![[tc_packages allKeys] containsObject:packageId] ) {
+					[tc_packages setObject:versions forKey:packageId];
+				}
+			}
+			
+			self.cyderCompatibilityList = [tc_packages copy];
+			[tc_packages writeToFile:COMPATIBILITY_PATH atomically:NO];
+		}
+	}] resume];
+}
+
+%end
+
+%hook CyteViewController 
+
+- (void)viewWillAppear:(BOOL)animated {
+	%orig;
+	self.navigationController.navigationBar.prefersLargeTitles = YES;
+}
+
+%end
 
 %hook PackageListController
 

@@ -39,3 +39,5 @@ debs
 .vscode
 _
 *.deb 
+/source/BookmarksController.m
+/source/BookmarksController.h
