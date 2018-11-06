@@ -3,11 +3,11 @@
 
 UIColor *LabelColor(BOOL detail, BOOL commercial, BOOL removing) {
 	if (commercial) {
-		return [UIColor colorWithRed:0 green:0.48f blue:1 alpha:detail ? 0.5f : 1];
+		return [[prefs colorForKey:@"commercialColor"] colorWithAlphaComponent:detail ? 0.5f : 1];//[UIColor colorWithRed:0 green:0.48f blue:1 alpha:detail ? 0.5f : 1];
 	} else if (removing) {
-		return [UIColor colorWithRed:0.87f green:0.09f blue:0.09f alpha:detail ? 0.5f : 1];
+		return [[prefs colorForKey:@"removeColor"] colorWithAlphaComponent:detail ? 0.5f : 1];//[UIColor colorWithRed:0.87f green:0.09f blue:0.09f alpha:detail ? 0.5f : 1];
 	}
-	return [[UIColor darkTextColor] colorWithAlphaComponent:detail ? 0.5f : 1];
+	return [[prefs colorForKey:@"textColor"] colorWithAlphaComponent:detail ? 0.5f : 1];//[[UIColor darkTextColor] colorWithAlphaComponent:detail ? 0.5f : 1];
 }
 
 UIColor *CompatibilityColor(NSUInteger status) {

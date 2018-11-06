@@ -115,7 +115,94 @@
 - (BOOL)_wantsLargeTitleDisplayed {
 	return YES;
 }
+-(void)layoutSubviews {
+        %orig;
+        //Sets bar style, removes white Bar
+        [self setBarStyle:UIBarStyleBlack];
 
+        //Sets title Text to white
+
+        self.titleTextAttributes = @{NSForegroundColorAttributeName: [prefs colorForKey:@"navTextColor"]};
+
+        //Tints the Buttons
+        self.tintColor = [prefs colorForKey:@"navTintColor"];//[UIColor greenColor];
+
+        //Hide background Image of NavBar, Makes black/ background image stand out
+        [self setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+
+        //Set BackgroundColor of NavBar, clear for backgroundImage
+        [self setBackgroundColor:[prefs colorForKey:@"navBackgroundColor"]];
+
+
+        //Shadow ¯\_(ツ)_/¯ not sure what this does, but uhh... the code doesnt work without it.
+        //self.shadowImage = [UIImage new];
+
+        //Sets the NavBar transparent, scrolling etc.
+        //Keep this on, otherwise it breaks the background of searching
+        self.translucent = YES;
+}
+
+%end
+
+%hook UIStatusBar
+
+-(void)layoutSubviews {
+        %orig;
+        self.foregroundColor = [prefs colorForKey:@"statusColor"];
+		self.tag = 199;
+}
+
+%end
+//iPX
+%hook _UIStatusBar
+
+
+-(void)layoutSubviews {
+        %orig;
+        self.foregroundColor = [prefs colorForKey:@"statusColor"];
+		self.tag = 199;
+}
+
+%end
+
+%hook UIStatusBarBackgroundView
+
+//set to clear when using background option, or blurred
+-(void)layoutSubviews {
+        %orig;
+        self.backgroundColor = [prefs colorForKey:@"navBackgroundColor"];
+		self.tag = 199;
+
+}
+%end
+
+%hook _UIBarBackground
+- (void) setBackgroundColor: (UIColor *)color {
+        %orig([prefs colorForKey:@"navBackgroundColor"]);
+}
+- (void) layoutSubviews{
+	%orig;
+	self.shim_shadowView.hidden =YES;
+}
+%end
+
+%hook UIVisualEffectView
+
+- (void)setBackgroundEffects: (NSArray *)effects {
+    if ([self.superview isKindOfClass:[NSClassFromString(@"_UIBarBackground") class]]) {
+        self.backgroundColor = [UIColor clearColor];
+    } else {
+        %orig;
+    }
+}
+%end
+
+%hook UITabBar
+-(void)layoutSubviews{
+	%orig;
+	self.tintColor = [prefs colorForKey:@"navTintColor"];
+	self.backgroundColor = [UIColor clearColor];
+}
 %end
 
 %hook UIViewController
@@ -171,8 +258,9 @@
 
 - (void)layoutSubviews {
 	%orig;
-	self.backgroundView.backgroundColor = [UIColor groupTableViewBackgroundColor];
+	self.backgroundView.backgroundColor = [prefs colorForKey:@"navBackgroundColor"];//[UIColor groupTableViewBackgroundColor];
 	self.textLabel.font = [UIFont boldSystemFontOfSize:18];
+	self.textLabel.textColor = [prefs colorForKey:@"navTextColor"];
 }
 
 %end

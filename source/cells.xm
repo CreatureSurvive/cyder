@@ -23,7 +23,7 @@
 
 - (void) setPackage:(Package *)package asSummary:(bool)summary {
 	UIView *content = (UIView *)object_getIvar(self, class_getInstanceVariable([self class], "content_"));
-	content.backgroundColor = [UIColor whiteColor];
+	content.backgroundColor = [prefs colorForKey:@"cellColor"];//[UIColor whiteColor];
 	
 	if (!self.content_view) {
 		self.content_view = [[PackageCellContentView alloc] initWithPackage:package];
@@ -69,7 +69,23 @@
 	%orig;
 	self.sectionIndexBackgroundColor = [UIColor clearColor];
 	self.separatorColor = [UIColor clearColor];
-	self.backgroundColor = [UIColor groupTableViewBackgroundColor];
+	//self.backgroundColor = [prefs colorForKey:@"tableColor"];//[UIColor groupTableViewBackgroundColor];
 }
+-(void)didMoveToWindow {
+        %orig;
+        //No Separators in the Tables
+        self.separatorStyle = UITableViewCellSeparatorStyleNone;
+        //Set the background Color to a Color or to an Image
+        //self.backgroundColor = [UIColor blackColor];
+        //Set the Background to an Image, Importing UIImage+ScaledImage.h for this
+        if([prefs boolForKey:@"enableImage"]) {    
+                UIImage *bgImage = [[UIImage imageWithContentsOfFile: @"/var/mobile/Library/Preferences/Cyder/background.jpg"] imageScaledToSize:[[UIApplication sharedApplication] keyWindow].bounds.size];
+                self.backgroundView = [[UIImageView alloc] initWithImage: bgImage];
+        }else{
+                self.backgroundColor = [prefs colorForKey:@"tableColor"];
+        }
+
+}
+
 
 %end
