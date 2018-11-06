@@ -1,12 +1,13 @@
 #import <cyder.h>
 
+
 UIColor *LabelColor(BOOL detail, BOOL commercial, BOOL removing) {
 	if (commercial) {
-		return [UIColor colorWithRed:0.15f green:0.56f blue:0.84f alpha:detail ? 0.5f : 1];
+		return [prefs colorForKey:@"commercialColor"];//[UIColor colorWithRed:0.15f green:0.56f blue:0.84f alpha:detail ? 0.5f : 1];
 	} else if (removing) {
-		return [UIColor colorWithRed:0.87f green:0.09f blue:0.09f alpha:detail ? 0.5f : 1];
+		return [prefs colorForKey:@"removeColor"];//[UIColor colorWithRed:0.87f green:0.31f blue:0.20f alpha:detail ? 0.5f : 1];
 	}
-	return [[UIColor darkTextColor] colorWithAlphaComponent:detail ? 0.5f : 1];
+	return [prefs colorForKey:@"textColor"];//[[UIColor darkTextColor] colorWithAlphaComponent:detail ? 0.5f : 1];
 }
 
 UIColor *CompatibilityColor(NSUInteger status) {
@@ -56,7 +57,7 @@ UIColor *CompatibilityColor(NSUInteger status) {
 
 - (void) setPackage:(Package *)package asSummary:(bool)summary {
 	UIView *content = (UIView *)object_getIvar(self, class_getInstanceVariable([self class], "content_"));
-	content.backgroundColor = [UIColor whiteColor];
+	content.backgroundColor = [prefs colorForKey:@"cellColor"];//[UIColor whiteColor];
 	
 	[package parse];
 	
@@ -168,7 +169,7 @@ UIColor *CompatibilityColor(NSUInteger status) {
 	%orig;
 	self.sectionIndexBackgroundColor = [UIColor clearColor];
 	self.separatorColor = [UIColor clearColor];
-	self.backgroundColor = [UIColor groupTableViewBackgroundColor];
+	self.backgroundColor = [prefs colorForKey:@"tableColor"];//[UIColor groupTableViewBackgroundColor];
 }
 
 %end

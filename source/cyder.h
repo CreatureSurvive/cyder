@@ -1,4 +1,5 @@
 #include "CYPProvider.h"
+#include <CSColorPicker/CSColorPicker.h>
 #define COMPATIBILITY_PATH  @"/var/mobile/Library/Caches/com.saurik.Cydia/cyder-compatibility.plist"
 
 @interface UIApplication ()
@@ -140,3 +141,22 @@
 - (bool)highlighted;
 
 @end
+
+@interface UINavigationBar (Cyder)
+-(void)setLargeTitleTextAttributes:(NSDictionary *)arg1;
+@end
+
+@interface UIStatusBar : UIView
+@property (nonatomic, retain) UIColor *foregroundColor;
+@end
+
+@interface UIStatusBarBackgroundView : UIView
+@end
+
+@interface _UIStatusBar : UIView
+@property (nonatomic, retain) UIColor *foregroundColor;
+@end
+
+@interface _UIBarBackground : UIView
+@property (nonatomic,readonly) UIImageView * shim_shadowView; 
+@end 
