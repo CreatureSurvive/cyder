@@ -28,7 +28,8 @@ For beta access you can add my repo [https://creaturecoding.com/repo/](https://c
 
 ## Credits and Acknowledgments
 
-Developed and Maintained by [CreatureSurvive](https://creaturecoding.com/) (Dana Buehre)
+Developed and Maintained by [CreatureSurvive](https://creaturecoding.com/) (Dana Buehre),
+[MidnightChips](https://github.com/midnightchip)
 
 ## License
 
