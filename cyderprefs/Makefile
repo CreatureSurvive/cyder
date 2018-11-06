@@ -1,3 +1,6 @@
+ARCHS = arm64
+TARGET = iphone:clang:11.2:latest
+
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = cyderprefs

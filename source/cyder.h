@@ -64,12 +64,6 @@
 @end
 
 @interface PackageCell : UITableViewCell
-@property (nonatomic, retain) UIImageView *icon;
-@property (nonatomic, retain) UIImageView *badge;
-@property (nonatomic, retain) UIView *compatible_badge;
-@property (nonatomic, retain) UILabel *name;
-@property (nonatomic, retain) UILabel *description;
-@property (nonatomic, retain) UILabel *source;
 - (void)setPackage:(Package *)package asSummary:(BOOL)summary;
 @end
 
