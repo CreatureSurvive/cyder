@@ -18,7 +18,7 @@
 	self.navigationItem.prompt = [NSString stringWithFormat:@"Total Sources: %lu", [[[NSClassFromString(@"Database") sharedInstance] sources] count]];
 	self.navigationController.navigationBar.prefersLargeTitles = YES;
 
-	[self performSelector:@selector(setNavItemrButtons)];
+	[self performSelector:@selector(setNavbarItems)];
 }
 
 - (void)showAddSourcePrompt {
@@ -72,35 +72,35 @@
 
 - (void)refreshButtonClicked {
 	%orig;
-	[self performSelector:@selector(setNavItemrButtons)];
+	[self performSelector:@selector(setNavbarItems)];
 	[self.refreshControl beginRefreshing];
 }
 
 - (void)cancelButtonClicked {
 	%orig;
-	[self performSelector:@selector(setNavItemrButtons)];
+	[self performSelector:@selector(setNavbarItems)];
 	[self.refreshControl endRefreshing];
 }
 
 - (void)addButtonClicked {
 	%orig;
-	[self performSelector:@selector(setNavItemrButtons)];
+	[self performSelector:@selector(setNavbarItems)];
 }
 
 - (void)editButtonClicked {
 	%orig;
-	[self performSelector:@selector(setNavItemrButtons)];
+	[self performSelector:@selector(setNavbarItems)];
 }
 
 - (void)reloadData {
 	%orig;
-	[self performSelector:@selector(setNavItemrButtons)];
+	[self performSelector:@selector(setNavbarItems)];
 	[self.refreshControl endRefreshing];
 }
 
 - (void)updateButtonsForEditingStatusAnimated:(BOOL)animated {}
 
-%new - (void)setNavItemrButtons {
+%new - (void)setNavbarItems {
 	static __strong UIBarButtonItem *addButton, *refreshButton, *stopButton, *copyButton;
 	addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(showAddSourcePrompt)];
 	refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonClicked)];
@@ -108,17 +108,21 @@
 	copyButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(copyButtonClicked)];
 	self.navigationItem.leftBarButtonItems = @[addButton, [[self delegate] updating] ? stopButton : refreshButton];
 	self.navigationItem.rightBarButtonItems = @[copyButton];
+	self.navigationItem.title = [[NSBundle mainBundle] localizedStringForKey:@"SOURCES" value:nil table:nil];
 }
 
 %new -(void)copyButtonClicked {
 	NSMutableString *sources = [NSMutableString new];
+	NSMutableArray *urls = [NSMutableArray new];
 	for (Source *source in [[NSClassFromString(@"Database") sharedInstance] sources]) {
 		[sources appendString:[[source rooturi] stringByAppendingString:@"\n"]];
+		[urls addObject:[NSURL URLWithString:[source rooturi]]];
 	}
 	
 	UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Source List:" message:sources preferredStyle:UIAlertControllerStyleAlert];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Copy to Pasteboard" style:UIAlertActionStyleDefault handler:^(UIAlertAction *set) {
 		[[UIPasteboard generalPasteboard] setString:sources];
+		[[UIPasteboard generalPasteboard] setURLs:urls];
 	}]];
 	[alertController addAction:[UIAlertAction actionWithTitle:@"Open In" style:UIAlertActionStyleDefault handler:^(UIAlertAction *set) {
 		UIActivityViewController *activityViewControntroller = [[UIActivityViewController alloc] initWithActivityItems:@[sources] applicationActivities:nil];  

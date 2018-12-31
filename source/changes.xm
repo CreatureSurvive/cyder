@@ -13,7 +13,9 @@
 
 - (void)viewWillAppear: (BOOL)animated {
 	%orig;
-
+	
+	self.navigationItem.prompt = [NSString stringWithFormat:@"Total Packages: %lu", [[[NSClassFromString(@"Database") sharedInstance] packages] count]];
+	
 	if ([[self delegate] updating]) { [self.refreshControl beginRefreshing]; }
 }
 

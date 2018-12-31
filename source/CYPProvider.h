@@ -1,4 +1,4 @@
-#include <CSPreferencesProvider.h>
+#include <CSPreferences/CSPreferencesProvider.h>
 #define prefs [CYPProvider sharedProvider]
 
 @interface CYPProvider : NSObject

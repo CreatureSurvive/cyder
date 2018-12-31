@@ -12,7 +12,9 @@
 @end
 
 @interface Source : NSObject
+- (NSString *)name;
 - (NSString *)rooturi;
+- (NSURL *)iconURL;
 @end
 
 @interface Database : NSObject
