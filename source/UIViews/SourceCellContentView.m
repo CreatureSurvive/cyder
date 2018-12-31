@@ -18,6 +18,7 @@
 	} return self;
 }
 
+
 - (void)commonInit {
 
 	self.icon = [[UIImageView alloc] init];

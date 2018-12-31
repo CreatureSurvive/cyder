@@ -49,6 +49,9 @@
 - (id)initWithFrame:(CGRect)frame reuseIdentifier:(NSString *)reuseIdentifier {
 	if ((self = %orig)) {
 		self.content_view = [[SourceCellContentView alloc] init];
+		self.content_view.backgroundColor = [prefs colorForKey:@"cellColor"];
+		self.content_view.name.textColor = [prefs colorForKey:@"textColor"];
+		self.content_view.uri.textColor = [prefs colorForKey:@"textColor"];
 		[self.contentView addSubview:self.content_view];
 	} return self;
 }

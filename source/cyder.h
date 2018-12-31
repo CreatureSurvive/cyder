@@ -17,13 +17,6 @@
 - (NSURL *)iconURL;
 @end
 
-@interface Database : NSObject
-@property (nonatomic, retain) NSDictionary *cyderCompatibilityList;
-+ (Database *)sharedInstance;
-- (NSArray<Source *> *)sources;
-- (NSArray *)packages;
-@end
-
 @interface CydiaObject : NSObject
 - (id)getPackageById:(id)identifier;
 - (NSString *)version;
@@ -65,7 +58,17 @@
 - (NSString *)longDescription;
 - (NSString *)shortDescription;
 - (NSString *)installed;
+- (NSString *)getField:(NSString *)field;
 - (Source *)source;
+@end
+
+
+@interface Database : NSObject
+@property (nonatomic, retain) NSDictionary *cyderCompatibilityList;
++ (Database *)sharedInstance;
+- (NSArray<Source *> *)sources;
+- (NSArray *)packages;
+- (Package *) packageWithName:(NSString *)name;
 @end
 
 @interface PackageCell : UITableViewCell
@@ -83,10 +86,26 @@
 
 @interface CyteViewController : UIViewController
 - (Cydia *)delegate;
+- (id)objectForKeypath:(NSString *)keypath inJSON:(NSData *)json;
+@end
+
+@interface CyteListController : CyteViewController
+
+- (id) initWithTitle:(NSString *)title;
+
+- (bool) shouldYield;
+- (void) loadView;
+- (void) _reloadData;
+- (void) resetCursor;
+- (void) clearData;
+- (CGFloat) rowHeight;
+
 @end
 
 @interface CYPackageController : UIViewController
 - (void)updatedButton;
+- (void) setDelegate:(id)delegate;
+- (id) initWithDatabase:(Database *)database forPackage:(NSString *)name withReferrer:(NSString *)referrer;
 @end
 
 @interface CyteWebViewController : CyteViewController
@@ -99,8 +118,9 @@
 @interface UITableViewCellSelectedBackground : UIView
 @end
 
-@interface PackageListController : CyteViewController
+@interface PackageListController : CyteListController
 -(Package *)packageAtIndexPath:(NSIndexPath *)indexPath;
+- (NSURL *) referrerURL;
 @end
 
 @interface SearchController : PackageListController
