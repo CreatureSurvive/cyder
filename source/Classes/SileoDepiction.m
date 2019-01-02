@@ -1,5 +1,5 @@
 #import "SileoDepiction.h"
-
+#import <CYPProvider.h>
 @implementation SileoDepiction
 
 #pragma mark UIViewController
@@ -48,8 +48,11 @@
 	
 	DataSourceEntry data = [self dataForIndexPath:indexPath];
 	
-	cell.textLabel.text = data[@"title"] ? data[@"title"] : nil;
-	cell.textLabel.attributedText = data[@"html"] ? [self attributedTextFromHTML:data[@"html"]] : nil;
+	if (data[@"title"])
+		cell.textLabel.text = data[@"title"];
+	else if (data[@"html"])
+		cell.textLabel.attributedText = [self attributedTextFromHTML:data[@"html"]];
+		
 	cell.detailTextLabel.text = data[@"subtitle"];
 	cell.imageView.image = [[UIImage imageNamed:data[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
@@ -90,6 +93,7 @@
 }
 
 - (NSAttributedString *)attributedTextFromHTML:(NSString *)html {
+	html = [html stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: -apple-system; color:%@}</style>", [prefs stringForKey:@"textColor"]]];
 	return [[NSAttributedString alloc] initWithData:[html dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)} documentAttributes:nil error:nil];
 }
 
