@@ -17,25 +17,28 @@ static Package *packageData;
     
     if (isSileoPackage) {
 		//NSError *error;
-		NSData *depictionData = [NSData dataWithContentsOfURL: [NSURL URLWithString:nativeDepictionURL]];
+		//NSData *depictionData = [NSData dataWithContentsOfURL: [NSURL URLWithString:nativeDepictionURL]];
+
 		//NSDictionary *json = [NSJSONSerialization JSONObjectWithData:depictionData options:kNilOptions error:&error];
 		//CYPackageController *view([[NSClassFromString(@"CYPackageController") alloc] initWithDatabase:[NSClassFromString(@"Database") sharedInstance] forPackage:[package id] withReferrer:[[self referrerURL] absoluteString]]);
 		//NSData * myData = [NSData dataWithContentsOfFile:@"/var/mobile/Data.plist"];
-		NSDictionary *myData = [self jsonToDict:depictionData];
-		//NSDictionary *myData = [NSDictionary dictionaryWithContentsOfFile:@"/var/mobile/Data.plist"];
-		UIViewController *nativeDepiction = [SileoDepiction rootViewControllerWithData:myData];
+		
+		//NSDictionary *myData = [self jsonToDict:depictionData];
+		
+		UIViewController *nativeDepiction = [SileoDepiction rootViewControllerWithJSON:[NSURL URLWithString:nativeDepictionURL]];//[SileoDepiction jsonToDict:depictionData];//[SileoDepiction rootViewControllerWithData:myData];
 		//nativeDepiction.navigationController.navigationBar.frame.size.height;
 		//nativeDepiction.view = [[UIView alloc]initWithFrame:[UIScreen mainScreen].bounds];
 		//[nativeDepiction.view setBackgroundColor:[UIColor yellowColor]];
 
 		nativeDepiction.title = [package getField:@"Name"];
 		
-		@try{
+		//nativeDepiction.navigationItem.prompt = [package getField:@"description"];//[self objectForKeypath:@"tabs.0.views.0.title" inJSON:depictionData];
+		/*@try{
 			nativeDepiction.navigationItem.prompt = [self objectForKeypath:@"tabs.0.views.0.title" inJSON:depictionData];
 		}
 		@catch (NSException *exception) {
         NSLog(@"No Title Text %@", exception.reason);
-		}
+		}*/
 		
 
 		

@@ -1,5 +1,7 @@
 #import "SileoDepiction.h"
 #import <cyder.h>
+#import "../MMarkdown/MMMarkdown.h"
+
 
 @implementation SileoDepiction
 
@@ -18,6 +20,56 @@
 	controller.data = data;
 	controller.cellStyle = style;
 	return controller;
+}
+
++ (instancetype)rootViewControllerWithJSON:(NSURL *)link{
+	//NSDictionary *jsonData = [SileoDepiction jsonToDict:link];
+	return [SileoDepiction rootViewControllerWithData:[SileoDepiction jsonToDict:link] cellStyle:UITableViewCellStyleSubtitle];
+
+}
+
++ (NSDictionary *)jsonToDict:(NSURL *)jsonLink{
+	NSData *json = [NSData dataWithContentsOfURL: jsonLink];
+	NSMutableArray *jsonData = [[NSArray array] mutableCopy];
+	NSMutableDictionary *finalDict = @{}.mutableCopy;
+	[finalDict setObject:@"Error" forKey:@"title"];
+
+	NSArray<NSDictionary *> *tabs = [SileoDepiction objectForKeypath:@"tabs" inJSON:json];
+	NSArray<NSDictionary *> *details;
+	NSError  *error;
+
+	for (NSDictionary *tab in tabs) {
+    	if ([tab[@"tabname"] isEqualToString:@"Details"]) {
+        	details = (NSArray*)tab[@"views"];
+        	break;
+    	}
+	}
+
+	for (NSDictionary *view in details) {
+    	if ([view[@"class"] isEqualToString:@"DepictionMarkdownView"]) {
+        	// add markdown to jsonData
+			NSDictionary *md = [NSDictionary dictionaryWithObject:[MMMarkdown HTMLStringWithMarkdown:view[@"markdown"] extensions:MMMarkdownExtensionsGitHubFlavored error:&error] forKey:@"html"];
+			[jsonData addObject: md];
+    	}
+		else if ([view[@"class"] isEqualToString:@"DepictionSubheaderView"]) {
+        	// some other data
+			NSDictionary *title = [NSDictionary dictionaryWithObject:view[@"title"] forKey:@"title"];
+			[jsonData addObject: title];
+    	}
+		else if ([view[@"class"] isEqualToString:@"DepictionTableTextView"]) {
+        	// some other data
+			NSString *titleAndText = [NSString stringWithFormat: @"%@: %@", view[@"title"] , view[@"text"]];
+			NSDictionary *normalText = [NSDictionary dictionaryWithObject:titleAndText forKey:@"title"];
+			[jsonData addObject: normalText];
+    	}
+	}
+
+
+	[finalDict setObject:jsonData forKey:@"data"];
+	return finalDict;
+	//return [SileoDepiction rootViewControllerWithData:finalDict cellStyle:UITableViewCellStyleSubtitle];
+
+
 }
 
 - (void)loadView {
@@ -105,6 +157,40 @@
 	NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithData:[html dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)} documentAttributes:nil error:nil];
 	[string addAttribute:NSForegroundColorAttributeName value:[prefs colorForKey:@"textColor"] range:NSMakeRange(0, string.length)];
 	return string;
+}
+
+//Search JSON
++ (id)objectForKeypath:(NSString *)keypath inJSON:(NSData *)json {
+	if (!keypath || !json) {return nil;}
+	
+	__block NSInteger depth = 0;
+	NSArray *keys = [keypath componentsSeparatedByString:@"."];
+	id result = [NSJSONSerialization JSONObjectWithData:json options:kNilOptions error:nil];
+	
+	id (^objectAtPath)(NSString *, id) = ^id(NSString *path, id collection) {
+		if (collection) {
+			
+			depth++;
+			if ([collection isKindOfClass:[NSDictionary class]]) {
+				return [(NSDictionary *)collection objectForKey:path];
+			}
+
+			else if ([collection isKindOfClass:[NSArray class]]) {
+				return [(NSArray *)collection objectAtIndex:[path integerValue]];
+			}
+		}
+		
+		return nil;
+	};
+
+	while (depth < keys.count) {
+		
+		if (!result) { return nil; }
+		
+		result = objectAtPath(keys[depth], result);
+	}
+	
+	return result;
 }
 
 @end
