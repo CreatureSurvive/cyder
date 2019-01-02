@@ -14,6 +14,5 @@ typedef NSDictionary<NSString *, id> *RootDataSource;
 + (instancetype)rootViewControllerWithData:(RootDataSource)data cellStyle:(UITableViewCellStyle)style;
 + (instancetype)rootViewControllerWithJSON:(NSURL *)link;
 
-+ (NSDictionary *)jsonToDict:(NSURL *)json;
 + (id)objectForKeypath:(NSString *)keypath inJSON:(NSData *)json;
 @end

@@ -23,53 +23,55 @@
 }
 
 + (instancetype)rootViewControllerWithJSON:(NSURL *)link{
-	//NSDictionary *jsonData = [SileoDepiction jsonToDict:link];
-	return [SileoDepiction rootViewControllerWithData:[SileoDepiction jsonToDict:link] cellStyle:UITableViewCellStyleSubtitle];
-
+	SileoDepiction *controller = [SileoDepiction new];
+	[controller loadFromSileoDepictionURL:link];
+	return controller;
 }
 
-+ (NSDictionary *)jsonToDict:(NSURL *)jsonLink{
-	NSData *json = [NSData dataWithContentsOfURL: jsonLink];
-	NSMutableArray *jsonData = [[NSArray array] mutableCopy];
-	NSMutableDictionary *finalDict = @{}.mutableCopy;
-	[finalDict setObject:@"Error" forKey:@"title"];
+- (void)loadFromSileoDepictionURL:(NSURL *)jsonLink{
+	NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+	NSURLRequest *request =  [[NSURLRequest alloc] initWithURL:jsonLink];
+	
+	[[session dataTaskWithRequest:request completionHandler:^(NSData *json, NSURLResponse *response, NSError *error) {
+		if (error) return;
+	
+		NSMutableArray *jsonData = [[NSArray array] mutableCopy];
+		NSMutableDictionary *finalDict = @{}.mutableCopy;
+		[finalDict setObject:@"Error" forKey:@"title"];
 
-	NSArray<NSDictionary *> *tabs = [SileoDepiction objectForKeypath:@"tabs" inJSON:json];
-	NSArray<NSDictionary *> *details;
-	NSError  *error;
+		NSArray<NSDictionary *> *tabs = [SileoDepiction objectForKeypath:@"tabs" inJSON:json];
+		NSArray<NSDictionary *> *details;
 
-	for (NSDictionary *tab in tabs) {
-    	if ([tab[@"tabname"] isEqualToString:@"Details"]) {
-        	details = (NSArray*)tab[@"views"];
-        	break;
-    	}
-	}
+		for (NSDictionary *tab in tabs) {
+			if ([tab[@"tabname"] isEqualToString:@"Details"]) {
+				details = (NSArray*)tab[@"views"];
+				break;
+			}
+		}
 
-	for (NSDictionary *view in details) {
-    	if ([view[@"class"] isEqualToString:@"DepictionMarkdownView"]) {
-        	// add markdown to jsonData
-			NSDictionary *md = [NSDictionary dictionaryWithObject:[MMMarkdown HTMLStringWithMarkdown:view[@"markdown"] extensions:MMMarkdownExtensionsGitHubFlavored error:&error] forKey:@"html"];
-			[jsonData addObject: md];
-    	}
-		else if ([view[@"class"] isEqualToString:@"DepictionSubheaderView"]) {
-        	// some other data
-			NSDictionary *title = [NSDictionary dictionaryWithObject:view[@"title"] forKey:@"title"];
-			[jsonData addObject: title];
-    	}
-		else if ([view[@"class"] isEqualToString:@"DepictionTableTextView"]) {
-        	// some other data
-			NSString *titleAndText = [NSString stringWithFormat: @"%@: %@", view[@"title"] , view[@"text"]];
-			NSDictionary *normalText = [NSDictionary dictionaryWithObject:titleAndText forKey:@"title"];
-			[jsonData addObject: normalText];
-    	}
-	}
-
-
-	[finalDict setObject:jsonData forKey:@"data"];
-	return finalDict;
-	//return [SileoDepiction rootViewControllerWithData:finalDict cellStyle:UITableViewCellStyleSubtitle];
+		for (NSDictionary *view in details) {
+			if ([view[@"class"] isEqualToString:@"DepictionMarkdownView"]) {
+				// add markdown to jsonData
+				NSDictionary *md = [NSDictionary dictionaryWithObject:[MMMarkdown HTMLStringWithMarkdown:view[@"markdown"] extensions:MMMarkdownExtensionsGitHubFlavored error:nil] forKey:@"html"];
+				[jsonData addObject: md];
+			}
+			else if ([view[@"class"] isEqualToString:@"DepictionSubheaderView"]) {
+				// some other data
+				NSDictionary *title = [NSDictionary dictionaryWithObject:view[@"title"] forKey:@"title"];
+				[jsonData addObject: title];
+			}
+			else if ([view[@"class"] isEqualToString:@"DepictionTableTextView"]) {
+				// some other data
+				NSString *titleAndText = [NSString stringWithFormat: @"%@: %@", view[@"title"] , view[@"text"]];
+				NSDictionary *normalText = [NSDictionary dictionaryWithObject:titleAndText forKey:@"title"];
+				[jsonData addObject: normalText];
+			}
+		}
 
 
+		[finalDict setObject:jsonData forKey:@"data"];
+		[self setData:finalDict];
+	}] resume];
 }
 
 - (void)loadView {
