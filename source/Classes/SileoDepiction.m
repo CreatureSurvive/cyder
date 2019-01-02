@@ -58,8 +58,9 @@
 	cell.detailTextLabel.text = data[@"subtitle"];
 	cell.imageView.image = [[UIImage imageNamed:data[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
-	cell.detailTextLabel.textColor = [prefs colorForKey:@"textColor"];//[UIColor lightGrayColor];
-	cell.imageView.tintColor = [prefs colorForKey:@"navTintColor"];//[UIColor blueColor];
+	cell.textLabel.textColor = [prefs colorForKey:@"textColor"];
+	cell.detailTextLabel.textColor = [prefs colorForKey:@"textColor"];
+	cell.imageView.tintColor = [prefs colorForKey:@"navTintColor"];
 	cell.textLabel.numberOfLines = 0;
 	cell.detailTextLabel.numberOfLines = 0;
 	
@@ -95,8 +96,10 @@
 }
 
 - (NSAttributedString *)attributedTextFromHTML:(NSString *)html {
-	html = [html stringByAppendingString:[NSString stringWithFormat:@"<style>body{font-family: -apple-system; color:%@}</style>", [prefs stringForKey:@"textColor"]]];
-	return [[NSAttributedString alloc] initWithData:[html dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)} documentAttributes:nil error:nil];
+	html = [html stringByAppendingString:@"<style>body{font-family: -apple-system!important;}</style>"];
+	NSMutableAttributedString *string = [[NSMutableAttributedString alloc] initWithData:[html dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)} documentAttributes:nil error:nil];
+	[string addAttribute:NSForegroundColorAttributeName value:[prefs colorForKey:@"textColor"] range:NSMakeRange(0, string.length)];
+	return string;
 }
 
 @end
