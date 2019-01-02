@@ -120,7 +120,9 @@
 
 @interface PackageListController : CyteListController
 -(Package *)packageAtIndexPath:(NSIndexPath *)indexPath;
+- (id)objectForKeypath:(NSString *)keypath inJSON:(NSData *)json;
 - (NSURL *) referrerURL;
+-(NSDictionary *)jsonToDict:(NSData *)json;
 @end
 
 @interface SearchController : PackageListController
