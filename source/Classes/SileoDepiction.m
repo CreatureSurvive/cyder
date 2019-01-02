@@ -1,5 +1,6 @@
 #import "SileoDepiction.h"
-#import <CYPProvider.h>
+#import <cyder.h>
+
 @implementation SileoDepiction
 
 #pragma mark UIViewController
@@ -52,12 +53,13 @@
 		cell.textLabel.text = data[@"title"];
 	else if (data[@"html"])
 		cell.textLabel.attributedText = [self attributedTextFromHTML:data[@"html"]];
-		
+
+	cell.backgroundColor = [prefs colorForKey:@"cellColor"];
 	cell.detailTextLabel.text = data[@"subtitle"];
 	cell.imageView.image = [[UIImage imageNamed:data[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
-	cell.detailTextLabel.textColor = [UIColor lightGrayColor];
-	cell.imageView.tintColor = [UIColor blueColor];
+	cell.detailTextLabel.textColor = [prefs colorForKey:@"textColor"];//[UIColor lightGrayColor];
+	cell.imageView.tintColor = [prefs colorForKey:@"navTintColor"];//[UIColor blueColor];
 	cell.textLabel.numberOfLines = 0;
 	cell.detailTextLabel.numberOfLines = 0;
 	
