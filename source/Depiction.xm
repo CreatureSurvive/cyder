@@ -31,7 +31,6 @@ static Package *packageData;
 		//[nativeDepiction.view setBackgroundColor:[UIColor yellowColor]];
 
 		nativeDepiction.title = [package getField:@"Name"];
-		
 		//nativeDepiction.navigationItem.prompt = [package getField:@"description"];//[self objectForKeypath:@"tabs.0.views.0.title" inJSON:depictionData];
 		/*@try{
 			nativeDepiction.navigationItem.prompt = [self objectForKeypath:@"tabs.0.views.0.title" inJSON:depictionData];
@@ -68,7 +67,7 @@ static Package *packageData;
 -(NSDictionary *)jsonToDict:(NSData *)json{
 	NSMutableArray *jsonData = [[NSArray array] mutableCopy];
 	NSMutableDictionary *finalDict = @{}.mutableCopy;
-	[finalDict setObject:@"Error" forKey:@"title"];
+	//[finalDict setObject:@"Error" forKey:@"title"];
 	//Tagline
 	/*NSDictionary *tagLine = [NSDictionary dictionaryWithObject:[self objectForKeypath:@"tabs.0.views.0.title" inJSON:json] forKey:@"title"];
 	[jsonData addObject: tagLine];

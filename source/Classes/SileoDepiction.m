@@ -34,10 +34,11 @@
 	
 	[[session dataTaskWithRequest:request completionHandler:^(NSData *json, NSURLResponse *response, NSError *error) {
 		if (error) return;
+		dispatch_async(dispatch_get_main_queue(), ^{
 	
 		NSMutableArray *jsonData = [[NSArray array] mutableCopy];
 		NSMutableDictionary *finalDict = @{}.mutableCopy;
-		[finalDict setObject:@"Error" forKey:@"title"];
+		//[finalDict setObject:@"Error" forKey:@"title"];
 
 		NSArray<NSDictionary *> *tabs = [SileoDepiction objectForKeypath:@"tabs" inJSON:json];
 		NSArray<NSDictionary *> *details;
@@ -71,6 +72,7 @@
 
 		[finalDict setObject:jsonData forKey:@"data"];
 		[self setData:finalDict];
+		});
 	}] resume];
 }
 
@@ -141,7 +143,8 @@
 - (void)setData:(RootDataSource)data {
 	if (_data != data) {
 		_data = data;
-		self.title = data[@"title"];
+		//Don't need this, since I set the name to package name in Depiction.xm
+		//self.title = data[@"title"];
 		[self.tableView reloadData];
 	}
 }
