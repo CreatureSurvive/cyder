@@ -67,14 +67,44 @@ static Package *packageData;
 	NSMutableDictionary *finalDict = @{}.mutableCopy;
 	[finalDict setObject:@"Error" forKey:@"title"];
 	//Tagline
-	NSDictionary *tagLine = [NSDictionary dictionaryWithObject:[self objectForKeypath:@"tabs.0.views.0.title" inJSON:json] forKey:@"title"];
+	/*NSDictionary *tagLine = [NSDictionary dictionaryWithObject:[self objectForKeypath:@"tabs.0.views.0.title" inJSON:json] forKey:@"title"];
 	[jsonData addObject: tagLine];
 
 	//Blurb
-	NSError  *error;
+	
 	//NSString *markDown = [self objectForKeypath:@"tabs.0.views.0.title" inJSON:json];
 	NSDictionary *blurb = [NSDictionary dictionaryWithObject:[MMMarkdown HTMLStringWithMarkdown:[self objectForKeypath:@"tabs.0.views.2.markdown" inJSON:json] extensions:MMMarkdownExtensionsGitHubFlavored error:&error] forKey:@"html"];
 	[jsonData addObject: blurb];
+
+	//Version
+	NSString *versionString = [NSString stringWithFormat: @"%@: %@", [self objectForKeypath:@"tabs.0.views.5.title" inJSON:json] , [self objectForKeypath:@"tabs.0.views.5.text" inJSON:json]];
+	NSDictionary *version = [NSDictionary dictionaryWithObject:versionString forKey:@"title"];
+	[jsonData addObject: version];*/
+	NSArray<NSDictionary *> *tabs = [self objectForKeypath:@"tabs" inJSON:json];
+	NSArray<NSDictionary *> *details;
+	NSError  *error;
+
+	for (NSDictionary *tab in tabs) {
+    	if ([tab[@"tabname"] isEqualToString:@"Details"]) {
+        	details = (NSArray*)tab[@"views"];
+        	break;
+    	}
+	}
+
+	for (NSDictionary *view in details) {
+    	if ([view[@"class"] isEqualToString:@"DepictionMarkdownView"]) {
+        	// add markdown to jsonData
+			NSDictionary *md = [NSDictionary dictionaryWithObject:[MMMarkdown HTMLStringWithMarkdown:view[@"markdown"] extensions:MMMarkdownExtensionsGitHubFlavored error:&error] forKey:@"html"];
+			[jsonData addObject: md];
+    	}
+		else if ([view[@"class"] isEqualToString:@"DepictionTableTextView"]) {
+        	// some other data
+			NSString *titleAndText = [NSString stringWithFormat: @"%@: %@", view[@"title"] , view[@"text"]];
+			NSDictionary *normalText = [NSDictionary dictionaryWithObject:titleAndText forKey:@"title"];
+			[jsonData addObject: normalText];
+    	}
+	}
+
 
 	[finalDict setObject:jsonData forKey:@"data"];
 	return finalDict;

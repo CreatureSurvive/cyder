@@ -54,7 +54,12 @@
 	else if (data[@"html"])
 		cell.textLabel.attributedText = [self attributedTextFromHTML:data[@"html"]];
 
-	cell.backgroundColor = [prefs colorForKey:@"cellColor"];
+	if([prefs boolForKey:@"enableImage"]) {    
+				cell.backgroundColor = [UIColor clearColor];
+		}else{
+				cell.backgroundColor = [prefs colorForKey:@"tableColor"];
+		}
+	
 	cell.detailTextLabel.text = data[@"subtitle"];
 	cell.imageView.image = [[UIImage imageNamed:data[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
