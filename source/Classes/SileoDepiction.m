@@ -48,12 +48,15 @@
 	
 	DataSourceEntry data = [self dataForIndexPath:indexPath];
 	
-	cell.textLabel.text = data[@"title"];
+	cell.textLabel.text = data[@"title"] ? data[@"title"] : nil;
+	cell.textLabel.attributedText = data[@"html"] ? [self attributedTextFromHTML:data[@"html"]] : nil;
 	cell.detailTextLabel.text = data[@"subtitle"];
 	cell.imageView.image = [[UIImage imageNamed:data[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
 	cell.detailTextLabel.textColor = [UIColor lightGrayColor];
 	cell.imageView.tintColor = [UIColor blueColor];
+	cell.textLabel.numberOfLines = 0;
+	cell.detailTextLabel.numberOfLines = 0;
 	
 	return cell;
 }
@@ -84,6 +87,10 @@
 
 - (DataSource)dataSource {
 	return self.data[@"data"];
+}
+
+- (NSAttributedString *)attributedTextFromHTML:(NSString *)html {
+	return [[NSAttributedString alloc] initWithData:[html dataUsingEncoding:NSUTF8StringEncoding] options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding)} documentAttributes:nil error:nil];
 }
 
 @end
