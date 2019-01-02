@@ -73,7 +73,7 @@ static Package *packageData;
 	//Blurb
 	NSError  *error;
 	//NSString *markDown = [self objectForKeypath:@"tabs.0.views.0.title" inJSON:json];
-	NSDictionary *blurb = [NSDictionary dictionaryWithObject:[MMMarkdown HTMLStringWithMarkdown:[self objectForKeypath:@"tabs.0.views.2.markdown" inJSON:json] error:&error] forKey:@"html"];
+	NSDictionary *blurb = [NSDictionary dictionaryWithObject:[MMMarkdown HTMLStringWithMarkdown:[self objectForKeypath:@"tabs.0.views.2.markdown" inJSON:json] extensions:MMMarkdownExtensionsGitHubFlavored error:&error] forKey:@"html"];
 	[jsonData addObject: blurb];
 
 	[finalDict setObject:jsonData forKey:@"data"];

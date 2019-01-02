@@ -1,4 +1,5 @@
 #import "SileoDepiction.h"
+#import <cyder.h>
 
 @implementation SileoDepiction
 
@@ -47,14 +48,15 @@
 	}
 	
 	DataSourceEntry data = [self dataForIndexPath:indexPath];
-	
+
+	cell.backgroundColor = [prefs colorForKey:@"cellColor"];
 	cell.textLabel.text = data[@"title"] ? data[@"title"] : nil;
 	cell.textLabel.attributedText = data[@"html"] ? [self attributedTextFromHTML:data[@"html"]] : nil;
 	cell.detailTextLabel.text = data[@"subtitle"];
 	cell.imageView.image = [[UIImage imageNamed:data[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 
-	cell.detailTextLabel.textColor = [UIColor lightGrayColor];
-	cell.imageView.tintColor = [UIColor blueColor];
+	cell.detailTextLabel.textColor = [prefs colorForKey:@"textColor"];//[UIColor lightGrayColor];
+	cell.imageView.tintColor = [prefs colorForKey:@"navTintColor"];//[UIColor blueColor];
 	cell.textLabel.numberOfLines = 0;
 	cell.detailTextLabel.numberOfLines = 0;
 	
