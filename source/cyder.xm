@@ -65,24 +65,6 @@
 
 %end
 
-%hook PackageListController
-
-%new -(CGFloat)tableView: (UITableView *)tableView heightForHeaderInSection: (NSInteger)section {
-	return ([tableView.dataSource tableView:tableView numberOfRowsInSection:section] == 0) ? 0 : 36.0f;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	static NSString *prefix = nil;
-	static dispatch_once_t once;
-	dispatch_once(&once, ^{
-		prefix = [[[NSBundle mainBundle] localizedStringForKey:@"NEW_AT" value:nil table:nil] ? : @"" stringByReplacingOccurrencesOfString:@"%@" withString:@""];
-	});
-
-	return [%orig stringByReplacingOccurrencesOfString: prefix withString:@""];
-}
-
-%end
-
 %hook PackageSettingsController
 
 - (NSString *)tableView: (UITableView *)tableView titleForFooterInSection: (NSInteger)section {
