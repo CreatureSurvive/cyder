@@ -30,7 +30,7 @@
 	UIView *content = (UIView *)object_getIvar(self, class_getInstanceVariable([self class], "content_"));
 	content.backgroundColor = [prefs colorForKey:@"cellColor"];//[UIColor whiteColor];
 	
-	[self.content_view refreshWithPackage:package];
+	[self.content_view refreshWithPackage:package asSummary:summary];
 }
 
 - (void)drawSummaryContentRect:(CGRect)rect {}

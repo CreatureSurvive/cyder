@@ -9,8 +9,9 @@
 @property (nonatomic, retain) UILabel *c_badge;
 @property (nonatomic, retain) UILabel *i_badge;
 @property (nonatomic, retain) UILabel *overview;
+@property (nonatomic, assign) BOOL summarized;
 
 - (instancetype)initWithPackage:(Package *)package;
-- (void)refreshWithPackage:(Package *)package;
+- (void)refreshWithPackage:(Package *)package asSummary:(BOOL)summarized;
 
 @end

@@ -53,7 +53,7 @@ UIColor *InstallationColor(NSString *status, NSString **label) {
 - (instancetype)initWithPackage:(Package *)package {
 	if ((self = [super init])) {
 		[self commonInit];
-		[self refreshWithPackage:package];
+		[self refreshWithPackage:package asSummary:NO];
 	} return self;
 }
 
@@ -108,12 +108,13 @@ UIColor *InstallationColor(NSString *status, NSString **label) {
 	[self addSubview:delemeter];
 }
 
-- (void)refreshWithPackage:(Package *)package {
+- (void)refreshWithPackage:(Package *)package asSummary:(BOOL)summarized {
 	[package parse];
 	NSString *badge, *mode, *latest, *install_label;
 	NSUInteger compatible = 0;
 	NSDictionary *bundle;
 	Database *database = [NSClassFromString(@"Database") sharedInstance];
+	self.summarized = summarized;
 	
 	if ((mode = [package mode])) {
 		badge = ([mode isEqualToString:@"REMOVE"] || [mode isEqualToString:@"PURGE"]) ? @"removing" : @"installing";
@@ -131,8 +132,8 @@ UIColor *InstallationColor(NSString *status, NSString **label) {
 	BOOL removing = [badge isEqualToString:@"removing"];
 	
 	self.name.textColor = LabelColor(NO, commercial, removing);
-	self.source.textColor = LabelColor(NO, commercial, removing);
-	self.overview.textColor = LabelColor(YES, commercial, removing);
+	self.source.textColor = summarized ? [UIColor clearColor] : LabelColor(NO, commercial, removing);
+	self.overview.textColor = summarized ? [UIColor clearColor] : LabelColor(YES, commercial, removing);
 	
 	self.icon.image = package.icon;
 	self.name.text = package.name;
@@ -151,8 +152,8 @@ UIColor *InstallationColor(NSString *status, NSString **label) {
 	[super layoutSubviews];
 	
 	CGRect bounds = self.bounds;
-		
-	self.name.frame = CGRectMake(48, 10, CGRectGetWidth(bounds) - 64, 20);
+	self.icon.frame = self.summarized ? CGRectMake(10, 5, 22, 22) : CGRectMake(10, 10, 30, 30);
+	self.name.frame = self.summarized ? CGRectMake(48, 6.5, CGRectGetWidth(bounds) - 64, 20) : CGRectMake(48, 10, CGRectGetWidth(bounds) - 64, 20);
 	self.source.frame = CGRectMake(48, 30, CGRectGetWidth(bounds) - 64, 15);
 	self.overview.frame = CGRectMake(10, CGRectGetHeight(bounds) - 22, CGRectGetWidth(bounds) - 26, 18);
 	self.c_badge.frame = CGRectMake(CGRectGetWidth(bounds) - 16, CGRectGetMidY(bounds), 16, CGRectGetMidY(bounds));
