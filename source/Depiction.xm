@@ -1,7 +1,7 @@
 #import <objc/runtime.h>
 #import <cyder.h>
 #import "Classes/SileoDepiction.h"
-#import "MMMarkdown.h"
+#import "MMarkdown/MMMarkdown.h"
 
 /* SILEO CRAP*/
 static Package *packageData;
@@ -137,6 +137,4 @@ static Package *packageData;
 %new 
 
 %end
-%ctor{
-	[[NSBundle bundleWithPath:@"/Library/Frameworks/MMMarkdown.framework"] load];
-}
+
